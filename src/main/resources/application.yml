@@ -1,0 +1,68 @@
+spring:
+  application:
+    name: my_post_service
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/url_shortener_db
+    username: user
+    password: password
+    hikari:
+      maximum-pool-size: 24
+
+  data:
+    kafka:
+      bootstrap-servers:
+        - localhost:9092
+        - localhost:9093
+      producer:
+        retries: 3
+        acks: 1
+        compression-type: gzip
+        batch:
+          size: 32768
+        linger:
+          ms: 50
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      consumer:
+        enable-auto-commit: false  # Подтверждение вручную
+        auto-offset-reset: earliest  # Начать с самого начала
+        max-poll-records: 100
+        session-timeout-ms: 30000
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      partitions:
+        default: 3
+      replication:
+        factor: 2
+      retention:
+        hours: 24
+        check-interval-ms: 300000
+        bytes: 273741824
+      segment:
+        bytes: 1073741824
+      fetch:
+        max-bytes: 5242880
+      broker:
+        id: 1
+      listener:
+        ack-mode: manual_immediate
+      admin:
+        auto-create-topics: true
+      log:
+        dirs: /tmp/kafka-logs
+        segment:
+          bytes: 1073741824
+        retention:
+          hours: 168
+          check-interval-ms: 300000
+
+
+server:
+  port: 7097
+
+logging:
+  level:
+    root: info
+
